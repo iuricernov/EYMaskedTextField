@@ -65,33 +65,24 @@ static NSRange EYNSStringSymbolsRangeToRange(NSString *string, NSRange symbolsRa
 
 @property (assign, nonatomic) id<EYMaskedTextFieldDelegate> originDelegate;
 
-@property (strong, nonatomic) UILabel *placeholderLabel;
-
 @end
 
 @implementation EYMaskedTextField
 
 @dynamic delegate;
 
-- (void)commonInit
+- (void)setUp
 {
     if (self.delegate != self) {
         [super setDelegate:self];
     }
-    self.placeholderLabel = [[UILabel alloc] init];
-    self.placeholderLabel.font = self.font;
-    self.placeholderLabel.textColor = [UIColor colorWithWhite:170/255.0 alpha:0.5];
-    self.placeholderLabel.text = [super placeholder];
-    self.placeholderLabel.attributedText = [super attributedPlaceholder];
-    [super setPlaceholder:nil];
-    [self addSubview:self.placeholderLabel];
 }
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        [self commonInit];
+        [self setUp];
     }
     return self;
 }
@@ -100,7 +91,7 @@ static NSRange EYNSStringSymbolsRangeToRange(NSString *string, NSRange symbolsRa
 {
     self = [super initWithFrame:frame];
     if (self) {
-        [self commonInit];
+        [self setUp];
     }
     return self;
 }
@@ -109,24 +100,9 @@ static NSRange EYNSStringSymbolsRangeToRange(NSString *string, NSRange symbolsRa
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
-        [self commonInit];
+        [self setUp];
     }
     return self;
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    
-    CGRect placeholderFrame = [self placeholderRectForBounds:self.bounds];
-    NSUInteger prefixLength = [self.mask rangeOfString:EYMaskAnySymbol].location;
-    if (prefixLength && prefixLength != NSNotFound) {
-        NSString *prefix = [self.mask substringToIndex:prefixLength];
-        CGFloat prefixWidth = [prefix sizeWithAttributes:@{ NSFontAttributeName: self.font }].width;
-        placeholderFrame.origin.x += prefixWidth;
-        placeholderFrame.size.width -= prefixWidth;
-    }
-    self.placeholderLabel.frame = placeholderFrame;
 }
 
 #pragma mark - Properties
@@ -136,14 +112,6 @@ static NSRange EYNSStringSymbolsRangeToRange(NSString *string, NSRange symbolsRa
     NSString *unformattedText = [self filteredStringFromString:self.text cursorPosition:NULL];
     _mask = mask;
     self.unformattedText = unformattedText;
-}
-
-- (void)setText:(NSString *)text
-{
-    [super setText:text];
-    
-    NSUInteger prefixLength = [self.mask rangeOfString:EYMaskAnySymbol].location;
-    self.placeholderLabel.hidden = (prefixLength != NSNotFound && self.text.length > prefixLength);
 }
 
 - (NSString *)unformattedText
@@ -162,33 +130,6 @@ static NSRange EYNSStringSymbolsRangeToRange(NSString *string, NSRange symbolsRa
 - (void)setDelegate:(id<EYMaskedTextFieldDelegate>)delegate
 {
     self.originDelegate = delegate;
-}
-
-- (void)setFont:(UIFont *)font
-{
-    [super setFont:font];
-    
-    self.placeholderLabel.font = font;
-}
-
-- (void)setPlaceholder:(NSString *)placeholder
-{
-    self.placeholderLabel.text = placeholder;
-}
-
-- (NSString *)placeholder
-{
-    return self.placeholderLabel.text;
-}
-
-- (void)setAttributedPlaceholder:(NSAttributedString *)attributedPlaceholder
-{
-    self.placeholderLabel.attributedText = attributedPlaceholder;
-}
-
-- (NSAttributedString *)attributedPlaceholder
-{
-    return self.placeholderLabel.attributedText;
 }
 
 #pragma mark - UITextFieldDelegate

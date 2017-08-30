@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <JVFloatLabeledTextField/JVFloatLabeledTextField.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface EYMaskedTextField : UITextField
+@interface EYMaskedTextField : JVFloatLabeledTextField
 
 @property (copy, nonatomic, nullable) IBInspectable NSString *mask;
 

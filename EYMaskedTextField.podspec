@@ -9,4 +9,5 @@ Pod::Spec.new do |spec|
   spec.source_files       = 'EYMaskedTextField/*'
   spec.platform           = :ios, "6.0"
   spec.requires_arc       = true
+  spec.dependency 'JVFloatLabeledTextField'
 end
